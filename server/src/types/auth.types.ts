@@ -39,3 +39,8 @@ export interface IUser extends Document {
   role: string;
   refreshTokens: RefreshToken[];
 }
+
+export interface EmailOTP {
+  code: string; //hashed
+  expiresAt: Date;
+}

@@ -1,11 +1,6 @@
 import {Router} from 'express';
-// import {logIn, logOut, signUp, forgetPassword, setPassword, verifyCode} from '../controllers/auth.controller';
-import {logIn, signUp, refresh, getMe, logOut} from "../controllers/auth.controller";
+import {logIn, signUp, refresh, getMe, logOut, forgetPassword, verifyCode, setPassword, resendOTP} from "../controllers/auth.controller";
 import { authenticate } from '../middlewares/authenticate.middleware';
-import { authorize } from '../middlewares/authorize.middleware';
-import { isOwner } from '../middlewares/ownership.middleware';
-import {Request, Response, NextFunction} from 'express';
-import User from '../models/user.model';
 
 const authRouter = Router();
 
@@ -31,11 +26,13 @@ getMe);
 
 authRouter.post('/logout',authenticate, logOut)
 
-// authRouter.post('/forget-password', forgetPassword)
+authRouter.post('/forget-password', forgetPassword)
 
-// authRouter.post('/verify-code', verifyCode)
+authRouter.post('/verify-code', verifyCode)
 
-// authRouter.post('/set-password', setPassword)
+authRouter.post('/resend-otp', resendOTP)
+
+authRouter.post('/set-password', setPassword)
 
 
 

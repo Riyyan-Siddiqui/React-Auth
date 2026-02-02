@@ -1,9 +1,7 @@
 import "./auth.css";
-import api from "axios";
 import { signupRequest } from "../api/auth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { ReactFormState } from "react-dom/client";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -26,9 +24,12 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      await signupRequest(name, email, password);
-      alert("Signed Up successfully");
-      navigate("/dashboard");
+      const res = await signupRequest(name, email, password);
+      if (res) {
+        navigate("/verify-code", {
+          state: {verificationToken: res.verificationToken}
+        });
+      }
     } catch (err: any) {
       setError(err.response?.data.message || "Failed to Sign Up");
     } finally {

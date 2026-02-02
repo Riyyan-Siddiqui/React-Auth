@@ -1,7 +1,8 @@
 // src/api/axios.ts
 import axios from 'axios';
+import { getAccessToken } from "./tokenService";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1",
   withCredentials: true,
   timeout: 10000
@@ -23,6 +24,14 @@ const processQueue = (error: Error | null = null) => {
   });
   failedQueue = [];
 };
+
+api.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if(token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+})
 
 api.interceptors.response.use(
   (response) => response,

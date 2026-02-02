@@ -1,9 +1,12 @@
 import User from "../models/user.model";
 import { IUser, RefreshToken } from "../types/auth.types";
 import bcrypt from "bcryptjs";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import { generateAccessToken, generateEmailVerificationToken, generateRefreshToken } from "../utils/jwt";
 import { Response, Request, NextFunction } from "express";
-import { hashToken } from "../utils/crypto";
+import { generateOTP, hashOTP, hashToken } from "../utils/crypto";
+import { sendOTPEmail } from "../utils/send-email";
+import { EMAIL_VERIFY_SECRET } from "../config/env";
+import jwt from "jsonwebtoken";
 
 export const signUp = async (
   req: Request,
@@ -55,47 +58,106 @@ export const signUp = async (
     // 5. Hash Passwrod
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 6. Create User
+    //6. Genarate Email OTP
+    const otp = generateOTP();
+
+    // 7. Create User (not verified yet)
     const user = await User.create({
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
-    });
-
-    // 7. Generate tokens (if auto login after signup)
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
-    const hashedRefreshToken = hashToken(refreshToken);
-
-    user.refreshTokens.push({
-      token: hashedRefreshToken,
-      createdAt: new Date(),
-    });
-
-    await user.save();
-
-    // Set cookies
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.status(201).json({
-      accessToken,
-      message: "User created Successfully",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+      emailVerified: false,
+      emailOTP: {
+        code: hashOTP(otp),
+        expiresAt: new Date(Date.now() + 1 * 60 * 1000), //1 min
+        resendCount: 0,
+        attempts: 0,
       },
     });
+
+    const verificationToken = generateEmailVerificationToken(user._id.toString());
+
+  // 8. Send OTP email
+  await sendOTPEmail(user.email, otp, verificationToken);  
+
+  //   // 7. Generate tokens (if auto login after signup)
+  //   const accessToken = generateAccessToken(user);
+  //   const refreshToken = generateRefreshToken(user);
+  //   const hashedRefreshToken = hashToken(refreshToken);
+
+  //   user.refreshTokens.push({
+  //     token: hashedRefreshToken,
+  //     createdAt: new Date(),
+  //   });
+
+  //   await user.save();
+
+  //   // Set cookies
+  //   res.cookie("refreshToken", refreshToken, {
+  //     httpOnly: true,
+  //     secure: process.env.NODE_ENV === "production",
+  //     sameSite: "strict",
+  //     maxAge: 7 * 24 * 60 * 60 * 1000,
+  //   });
+
+  //   res.status(201).json({
+  //     accessToken,
+  //     message: "User created Successfully",
+  //     user: {
+  //       id: user._id,
+  //       name: user.name,
+  //       email: user.email,
+  //       role: user.role,
+  //     },
+  //   });
+  // } catch (error) {
+  //   res.status(500).json({ message: "Signup Failed" });
+  // }
+
+  res.status(201).json({
+    message: "Signup successful. Please verify email using OTP",
+    verificationToken, // Frontend stores temporary in memory not in local storage.
+  });
   } catch (error) {
-    res.status(500).json({ message: "Signup Failed" });
+    res.status(500).json({message: "Signup Failed"});
   }
 };
+
+export const resendOTP = async (req: Request, res: Response) => {
+  const user = await User.findById(req.user!.id);
+
+  if(!user) return res.sendStatus(404);
+
+  if (user.emailVerified) res.status(400).json({message: "Already verified"})
+
+    const otpData = user.emailOTP!;
+
+    if (otpData.lockedUntil && otpData.lockedUntil > new Date()) {
+      return res.status(429).json({
+        message: "Too many attempts. Try Later."
+      })
+    }
+
+    if (otpData.resendCount >= 3) {
+      otpData.lockedUntil = new Date(Date.now() + 15*60*1000); //15 min lock
+      await user.save();
+
+      return res.status(429).json({message: "Too many OTP requests. Locked for 15 minutes"})
+    }
+
+    const otp = generateOTP();
+
+    otpData.code = hashOTP(otp);
+    otpData.expiresAt = new Date(Date.now() + 60 * 1000) // 1 min
+    otpData.resendCount += 1;
+
+    const verificationToken = generateEmailVerificationToken(user._id.toString());
+
+    await user.save();
+    await sendOTPEmail(user.email, otp, verificationToken);
+
+    res.json({message: "OTP resent successfully", verificationToken});
+}
 
 export const logIn = async (req: Request, res: Response) => {
   const user = await User.findOne({ email: req.body.email });
@@ -218,3 +280,114 @@ export const getMe = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const verifyCode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+
+  const { otp, verificationToken } = req.body;
+
+  if (!otp || !verificationToken)
+    return res.status(400).json({message: "OTP and token required."});
+
+  let payload: any;
+
+  try{
+    payload = jwt.verify(
+      verificationToken,
+      EMAIL_VERIFY_SECRET!
+    );
+  } catch {
+    return res.status(401).json({message: "Invalid or expired token"});
+  }
+
+  if (payload.type !== "email_verification")
+    return res.json(403).json({message: "Invalid token scope"});
+
+  const user = await User.findById(payload.sub);
+  if (!user) return res.status(404);
+
+  if (user.emailVerified) {
+    return res.status(400).json({message: "Email already verified"})
+  }
+
+  const emailOTP = user.emailOTP;
+
+  if(!emailOTP) {
+    return res.status(400).json({
+      message: "OTP not found"
+    })
+  }
+
+  // lock check 
+  if (emailOTP.lockedUntil && emailOTP.lockedUntil.getTime() > Date.now()) {
+    return res.status(429).json({
+      message: "Too many attempts. Please try again later."
+    })
+  }
+
+  // Expiry Check
+  if (emailOTP.expiresAt!.getTime() < Date.now()) {
+    return res.status(400).json({
+      message: "OTP expired",
+    });
+  }
+
+  // OTP mismatch
+  if(emailOTP.code !== hashOTP(otp)){
+    emailOTP.attempts += 1;
+
+    if(emailOTP.attempts >= 3) {
+      emailOTP.lockedUntil = new Date(Date.now() + 15 * 60 * 1000) // 15 mins
+      emailOTP.attempts = 0;
+    }
+
+    await user.save();
+
+    return res.status(400).json({
+      message: "Invlaid OTP"
+    })
+  }
+
+  // Success Verify Email
+  user.emailVerified = true;
+  user.emailOTP = undefined;
+
+  // Issue tokens
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  user.refreshTokens.push({
+    token: hashToken(refreshToken),
+    createdAt: new Date(),
+  });
+
+  await user.save();
+
+  // set refresh cookie
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  res.json({
+    accessToken,
+    message: "Email verified successfully",
+  });
+};
+
+export const forgetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {};
+
+export const setPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {};

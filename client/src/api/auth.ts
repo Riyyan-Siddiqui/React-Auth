@@ -10,6 +10,13 @@ interface User {
 interface AuthResponse {
   user: User;
   message?: string;
+  verificationToken?: string
+}
+
+interface OTPResponse {
+  OTP?: string,
+  verificationToken: string,
+  accessToken?: string
 }
 
 export async function loginRequest(
@@ -38,5 +45,22 @@ export async function signupRequest(
 
 export async function logoutRequest(): Promise<AuthResponse> {
   const res = await api.post("/auth/logout");
+  return res.data;
+}
+
+// For verifying the OTP entered by the user
+export async function verifyCode(OTP: string, verificationToken: string): Promise<OTPResponse> {
+  const res = await api.post("/auth/verify-code", {
+    otp: OTP,
+    verificationToken, // pass the token returned from signup
+  });
+  return res.data;
+}
+
+// For resending a new OTP
+export async function resendOTP(verificationToken: string): Promise<OTPResponse> {
+  const res = await api.post("/auth/resend-otp", {
+    verificationToken, // frontend sends the same token received after signup
+  });
   return res.data;
 }

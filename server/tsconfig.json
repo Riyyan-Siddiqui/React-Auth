@@ -1,23 +1,25 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src",
     "outDir": "./dist",
-    "rootDir": "./",
+
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
+
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "types": ["node"],
+
+    "sourceMap": true,
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true
+    "declarationMap": true
   },
-  "ts-node": {
-    "esm": true
-  },
-  "include": ["src/**/*", "utils/sendEmail.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }

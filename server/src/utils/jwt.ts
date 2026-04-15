@@ -1,5 +1,5 @@
 import jwt, {SignOptions} from 'jsonwebtoken';
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, JWT_ACCESS_TOKEN_EXPIRES_IN, JWT_REFRESH_TOKEN_EXPIRES_IN, EMAIL_VERIFY_EXPIRES_IN, EMAIL_VERIFY_SECRET } from '../config/env';
+import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, JWT_ACCESS_TOKEN_EXPIRES_IN, JWT_REFRESH_TOKEN_EXPIRES_IN, EMAIL_VERIFY_EXPIRES_IN, EMAIL_VERIFY_SECRET } from '../config/env.js';
 
 export const generateAccessToken = (user: any) => {
     return jwt.sign(

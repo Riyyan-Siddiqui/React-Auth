@@ -1,7 +1,7 @@
 // src/middleware/authorize.ts
 import { Request, Response, NextFunction } from "express";
-import { ROLE_PERMISSIONS } from "../config/permissions";
-import { Permission } from "../types/auth.types";
+import { ROLE_PERMISSIONS } from "../config/permissions.js";
+import { Permission } from "../types/auth.types.js";
 
 export const authorize = (...requiredPermissions: Permission[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {

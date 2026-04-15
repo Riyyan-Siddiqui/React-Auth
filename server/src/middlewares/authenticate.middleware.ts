@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { ACCESS_TOKEN_SECRET } from "../config/env";
-import { JwtPayload } from "../types/auth.types";
+import { ACCESS_TOKEN_SECRET } from "../config/env.js";
+import { JwtPayload } from "../types/auth.types.js";
 
 
 export const authenticate = (

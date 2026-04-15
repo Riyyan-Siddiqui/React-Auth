@@ -1,8 +1,8 @@
-import {NODE_ENV, PORT} from "./config/env"
+import {NODE_ENV, PORT} from "./config/env.js"
 import express from "express";
 import cookieParser from 'cookie-parser';
-import connectToDatabase from "./database/db";
-import authRouter from "./routes/auth.routes";
+import connectToDatabase from "./database/db.js";
+import authRouter from "./routes/auth.routes.js";
 import cors from 'cors';
 
 const app = express();

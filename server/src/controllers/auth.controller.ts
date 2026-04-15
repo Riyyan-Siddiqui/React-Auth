@@ -1,11 +1,11 @@
-import User from "../models/user.model";
-import { IUser, RefreshToken } from "../types/auth.types";
+import User from "../models/user.model.js";
+import { IUser, RefreshToken } from "../types/auth.types.js";
 import bcrypt from "bcryptjs";
 import {
   generateAccessToken,
   generateEmailVerificationToken,
   generateRefreshToken,
-} from "../utils/jwt";
+} from "../utils/jwt.js";
 import { Response, Request, NextFunction } from "express";
 import {
   generateOTP,
@@ -13,11 +13,11 @@ import {
   hashOTP,
   hashResetToken,
   hashToken,
-} from "../utils/crypto";
-import { sendOTPEmail, sendPasswordResetEmail } from "../utils/send-email";
-import { EMAIL_VERIFY_SECRET } from "../config/env";
+} from "../utils/crypto.js";
+import { sendOTPEmail, sendPasswordResetEmail } from "../utils/send-email.js";
+import { EMAIL_VERIFY_SECRET } from "../config/env.js";
 import jwt from "jsonwebtoken";
-import { validatePassword } from "../utils/passwordValidator";
+import { validatePassword } from "../utils/passwordValidator.js";
 
 export const signUp = async (
   req: Request,

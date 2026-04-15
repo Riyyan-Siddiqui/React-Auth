@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { SMTP_PASS } from "./env";
+import { SMTP_PASS } from "./env.js";
 
 export const accountEmail = "riyyan.s.24@gmail.com";
 

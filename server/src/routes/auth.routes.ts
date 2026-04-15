@@ -9,17 +9,17 @@ import {
   verifyCode,
   setPassword,
   resendOTP,
-} from "../controllers/auth.controller";
-import { authenticate } from "../middlewares/authenticate.middleware";
-import { isOwner } from "../middlewares/ownership.middleware";
+} from "../controllers/auth.controller.js";
+import { authenticate } from "../middlewares/authenticate.middleware.js";
+import { isOwner } from "../middlewares/ownership.middleware.js";
 import {
   authRateLimiter,
   signupRateLimiter,
   otpRateLimiter,
   refreshRateLimiter,
-} from "../middlewares/rateLimiter.middleware";
-import User from "../models/user.model";
-import { hashToken } from "../utils/crypto";
+} from "../middlewares/rateLimiter.middleware.js";
+import User from "../models/user.model.js";
+import { hashToken } from "../utils/crypto.js";
 
 const authRouter = Router();
 

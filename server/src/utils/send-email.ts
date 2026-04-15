@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
-import { generateVerificationEmail, passwordResetEmail } from "./email-template";
-import { accountEmail, transporter } from "../config/nodemailer";
+import { generateVerificationEmail, passwordResetEmail } from "./email-template.js";
+import { accountEmail, transporter } from "../config/nodemailer.js";
 
 export async function sendOTPEmail (to: string, name: string, otp: string) {
 

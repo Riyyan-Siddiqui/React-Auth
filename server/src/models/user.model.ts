@@ -108,8 +108,6 @@ const userSchema = new mongoose.Schema(
 /* 🔍 Index for refresh-token lookup */
 userSchema.index({ "refreshTokens.token": 1 });
 
-// Index for email lookup (faster auth)
-userSchema.index({ email: 1 });
 
 // Virtual for checking if account is locked
 userSchema.virtual("isLocked").get(function (this: any) {
@@ -140,7 +138,7 @@ userSchema.methods.incrementLoginAttempts = async function () {
 
   // lock account after 5 failed attempts
   const maxAttempts = 5;
-  const lockTime = 15 * 69 * 1000; //15 minutes
+  const lockTime = 15 * 60 * 1000; //15 minutes
 
   if (this.failedLoginAttempts + 1 >= maxAttempts && !this.isLocked) {
     updates.$set = { lockUntil: new Date(Date.now() + lockTime) };

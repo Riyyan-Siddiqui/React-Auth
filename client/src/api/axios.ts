@@ -5,10 +5,11 @@ import {
 } from "./tokenService";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000/api/v1",
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true, // Sends httpOnly cookies with every request
   timeout: 10000,
 });
+
 
 let isRefreshing = false;
 let failedQueue: Array<{

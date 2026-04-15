@@ -73,6 +73,8 @@ export default function ForgetPassword() {
               {loading ? "Sending..." : "Send Reset Link"}
             </button>
 
+            {error && <p>{error}</p>}
+
             <p className="switch-text">
               Back to <Link to="/login" className="link">
                 Login

@@ -32,7 +32,7 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
-    "@types/node": "^25.0.9",
+    "@types/node": "^25.6.0",
     "@types/nodemailer": "^7.0.9",
     "eslint": "^9.39.2",
     "eslint-plugin-react": "^7.37.5",

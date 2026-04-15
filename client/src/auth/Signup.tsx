@@ -1,7 +1,7 @@
 import "./auth.css";
 import { signupRequest } from "../api/auth";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link} from "react-router-dom";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -92,7 +92,9 @@ export default function Signup() {
             {error && <p>{error}</p>}
 
             <p className="switch-text">
-              Already have an account? <span className="link">Login</span>
+              Already have an account? <Link to="/login" className="link">
+                Login
+              </Link>
             </p>
           </form>
         </div>

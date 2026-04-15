@@ -5,7 +5,7 @@ export const generateAccessToken = (user: any) => {
     return jwt.sign(
         {id: user._id, role: user.role},
         ACCESS_TOKEN_SECRET!,
-        {expiresIn: JWT_ACCESS_TOKEN_EXPIRES_IN || "15m"}  as SignOptions
+        {expiresIn: JWT_ACCESS_TOKEN_EXPIRES_IN || "1m"}  as SignOptions
     );
 };
 

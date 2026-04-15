@@ -1,40 +1,97 @@
-import {Router} from 'express';
-import {logIn, signUp, refresh, getMe, logOut, forgetPassword, verifyCode, setPassword, resendOTP} from "../controllers/auth.controller";
-import { authenticate } from '../middlewares/authenticate.middleware';
+import { Router } from "express";
+import {
+  logIn,
+  signUp,
+  refresh,
+  getMe,
+  logOut,
+  forgetPassword,
+  verifyCode,
+  setPassword,
+  resendOTP,
+} from "../controllers/auth.controller";
+import { authenticate } from "../middlewares/authenticate.middleware";
+import { isOwner } from "../middlewares/ownership.middleware";
+import {
+  authRateLimiter,
+  signupRateLimiter,
+  otpRateLimiter,
+  refreshRateLimiter,
+} from "../middlewares/rateLimiter.middleware";
+import User from "../models/user.model";
+import { hashToken } from "../utils/crypto";
 
 const authRouter = Router();
 
-authRouter.post('/login', logIn)
+// Public routes with rate limiting
+authRouter.post("/login", authRateLimiter, logIn);
+authRouter.post("/signup", signupRateLimiter, signUp);
+authRouter.post("/refresh", refreshRateLimiter, refresh);
 
-authRouter.post('/signup', signUp)
+// OTP routes with strict rate limiting
+authRouter.post("/verify-code", otpRateLimiter, verifyCode);
+authRouter.post("/resend-otp", otpRateLimiter, resendOTP);
 
-authRouter.post('/refresh',  refresh)
+// Password reset routes
+authRouter.post("/forget-password", authRateLimiter, forgetPassword);
+authRouter.post("/reset-password", authRateLimiter, setPassword);
 
+// Protected routes (require authentication)
+authRouter.get("/me", authenticate, getMe);
+authRouter.post("/logout", authenticate, logOut);
 
-// authRouter.get(
-//   "/users/:id",
-//   authenticate,
-//   isOwner("id"), // checks req.user.id === req.params.id OR role === admin
-//   async (req, res) => {
-//       const user = await User.findById(req.params.id).select("-password");
-//       res.json(user);
-//   }
-// );
+// Protected route with ownership check
+authRouter.get(
+  "/users/:id",
+  authenticate,
+  isOwner("id"), // check req.user.id === req.params.id OR role === admin
+  async (req, res) => {
+    const user = await User.findById(req.params.id).select(
+      "-password -refreshTokens",
+    );
+    res.json({ user });
+  },
+);
 
-authRouter.get("/me", authenticate, 
-getMe);
+authRouter.get("/session", authenticate, async (req, res) => {
+  const user = await User.findById(req.user!.id);
 
-authRouter.post('/logout',authenticate, logOut)
+  const sessions = user?.refreshTokens
+    .filter((token: any) => token.expiresAt > new Date()) // only active sessions
+    .map((token: any, index: number) => ({
+      id: index,
+      createdAt: token.createdAt,
+      expiresAt: token.expiresAt,
+      deviceInfo: token.deviceInfo,
+      current: hashToken(req.cookies.refreshToken) === token.token,
+    }));
 
-authRouter.post('/forget-password', forgetPassword)
+  res.json({ sessions });
+});
 
-authRouter.post('/verify-code', verifyCode)
+authRouter.delete("/sessions/:id", authenticate, async (req, res) => {
+  const user = await User.findById(req.user!.id);
+  const sessionIndex = parseInt(
+    Array.isArray(req.params.id) ? req.params.id[0] : req.params.id,
+  );
 
-authRouter.post('/resend-otp', resendOTP)
+  if (user && sessionIndex >= 0 && sessionIndex < user.refreshTokens.length) {
+    user.refreshTokens.splice(sessionIndex, 1);
+    await user.save();
+    res.json({ message: "Session revoked successfully"});
+  } else {
+    res.status(404).json({ message: "Session not found"});
+  }
+});
 
-authRouter.post('/set-password', setPassword)
+authRouter.post("/logout-all", authenticate, async (req, res) => {
+    await User.updateOne(
+        {_id: req.user!.id},
+        { $set: {refreshTokens: []}}
+    );
 
-
-
+    res.clearCookie("refreshToken");
+    res.json({ message: "Logged out from all devices"});
+})
 
 export default authRouter;

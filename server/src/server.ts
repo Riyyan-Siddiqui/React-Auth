@@ -1,4 +1,4 @@
-import {PORT} from "./config/env"
+import {NODE_ENV, PORT} from "./config/env"
 import express from "express";
 import cookieParser from 'cookie-parser';
 import connectToDatabase from "./database/db";
@@ -10,6 +10,14 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
+
+// app.set('trust proxy', true) // Shows the real IP not the proxy IP.
+
+if (NODE_ENV === 'production') {
+    app.set('trust proxy', 1)
+} else {
+    app.set('trust proxy', false)
+}
 
 app.use(cors({
     origin: "http://localhost:5173",

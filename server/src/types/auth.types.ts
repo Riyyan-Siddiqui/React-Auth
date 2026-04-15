@@ -1,14 +1,14 @@
 // src/types/auth.types.ts
-import { Types, Document } from 'mongoose';
+import { Types, Document } from "mongoose";
 
-export type UserRole = 'admin' | 'user';
-export type Permission = 
-  | 'users:read' 
-  | 'users:write' 
-  | 'users:delete'
-  | 'posts:read'
-  | 'posts:write'
-  | 'posts:delete';
+export type UserRole = "admin" | "user";
+export type Permission =
+  | "users:read"
+  | "users:write"
+  | "users:delete"
+  | "posts:read"
+  | "posts:write"
+  | "posts:delete";
 
 export interface JwtPayload {
   id: string;
@@ -27,15 +27,21 @@ declare global {
 }
 
 export interface RefreshToken {
-  token: string,
+  token: string;
   createdAt: Date;
+  expiresAt: Date;
+  deviceInfo: {
+    ip?: string;
+    userAgent?: string;
+    lastUsed: Date;
+  };
 }
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
-  name: string,
-  email: string,
-  password: string,
+  name: string;
+  email: string;
+  password: string;
   role: string;
   refreshTokens: RefreshToken[];
 }

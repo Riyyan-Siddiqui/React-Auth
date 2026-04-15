@@ -7,10 +7,6 @@ import cors from "cors";
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
 // app.set('trust proxy', true) // Shows the real IP not the proxy IP.
 
 if (NODE_ENV === "production") {
@@ -21,11 +17,20 @@ if (NODE_ENV === "production") {
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://react-auth-frontend-hhsr.onrender.com"],
+    origin: [
+      "http://localhost:5173",
+      "https://react-auth-frontend-hhsr.onrender.com",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  })
+  }),
 );
+
+app.options("*", cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use("/api/v1/auth", authRouter);
 

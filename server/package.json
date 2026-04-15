@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --watch src --ext ts,js,json --exec \"npx tsx\" src/server.ts",
     "start": "cross-env NODE_ENV=production npx tsx src/server.ts",
-    "build": "tsc",
+    "build": "npx tsc",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix"
   },

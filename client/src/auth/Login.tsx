@@ -25,7 +25,7 @@ export default function Login() {
       // ✅ Normal login (email verified)
       if (response.user && response.accessToken) {
         login(response.accessToken, response.user);
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (err: any) {
       // ✅ Check if email verification required

@@ -10,6 +10,8 @@ export const api = axios.create({
   timeout: 10000,
 });
 
+console.log(import.meta.env.VITE_BACKEND_URL);
+
 
 let isRefreshing = false;
 let failedQueue: Array<{

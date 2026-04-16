@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://react-auth-frontend-hhsr.onrender.com",
+      "https://react-auth-frontend-hhsr.onrender.com", "https://react-auth-gules-pi.vercel.app/",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],

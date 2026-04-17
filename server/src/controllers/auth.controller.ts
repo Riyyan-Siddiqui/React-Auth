@@ -282,7 +282,7 @@ export const logIn = async (req: Request, res: Response) => {
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none' as const,
+      sameSite: 'none' as any,
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
@@ -342,7 +342,7 @@ export const refresh = async (req: Request, res: Response) => {
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: 'none' as const,
+    sameSite: 'none' as any,
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -479,7 +479,7 @@ export const verifyCode = async (
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: 'none' as const,
+    sameSite: 'none' as any,
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });

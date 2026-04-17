@@ -34,7 +34,7 @@ export const signUp = async (
         message: `Password does not meet security requirements \n${errors}`,
         code: "WEAK_PASSWORD",
         requirements: errors,
-        strength
+        strength,
       });
     }
 
@@ -360,9 +360,7 @@ export const logOut = async (req: Request, res: Response) => {
   }
 
   res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none",
+    path: "/",
   });
   res.json({
     message: "Logged Out Successfully",

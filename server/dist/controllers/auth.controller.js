@@ -81,11 +81,7 @@ export const signUp = async (req, res, next) => {
       user._id.toString(),
     );
     // 8. Send OTP email
-    try {
-      await sendOTPEmail(user.email, user.name, otp);
-    } catch (err) {
-      return res.status(500).json({ message: "User created but email failed" });
-    }
+    await sendOTPEmail(user.email, user.name, otp);
     res.status(201).json({
       message: "Signup successful. Please verify email using OTP",
       verificationToken, // Frontend stores temporary in memory not in local storage.
@@ -237,8 +233,10 @@ export const logIn = async (req, res) => {
   res
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "none",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     })
     .json({
       accessToken,
@@ -286,8 +284,9 @@ export const refresh = async (req, res) => {
   await user.save();
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "none",
+    path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   res.json({
@@ -303,9 +302,7 @@ export const logOut = async (req, res) => {
     );
   }
   res.clearCookie("refreshToken", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "none",
+    path: "/",
   });
   res.json({
     message: "Logged Out Successfully",
@@ -337,7 +334,7 @@ export const verifyCode = async (req, res, next) => {
     return res.status(401).json({ message: "Invalid or expired token" });
   }
   if (payload.type !== "email_verification")
-    return res.status(403).json({ message: "Invalid token scope" });
+    return res.json(403).json({ message: "Invalid token scope" });
   const user = await User.findById(payload.sub);
   if (!user) return res.status(404);
   if (user.emailVerified) {
@@ -393,8 +390,9 @@ export const verifyCode = async (req, res, next) => {
   // set refresh cookie
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     sameSite: "none",
+    path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
   res.json({

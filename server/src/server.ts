@@ -22,39 +22,15 @@ if (NODE_ENV === "production") {
 const allowedOrigins = [
   "http://localhost:5173",
   "https://react-auth-gules-pi.vercel.app",
-  "https://react-auth-git-main-riyyan-siddiquis-projects.vercel.app",
+  "*" 
 ];
 
-/* ---------------------------
-   CORS Middleware
----------------------------- */
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow Postman / server-to-server / no-origin requests
-      if (!origin) return callback(null, true);
-
-      // Allow exact origins
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // Allow any Vercel preview deployment
-      if (origin.endsWith(".vercel.app")) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: allowedOrigins, // Use the array directly for a moment to test
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
-
-/* Handle Preflight */
-app.options("*", cors());
-
 /* ---------------------------
    Body Parsers
 ---------------------------- */
@@ -79,14 +55,21 @@ app.get("/", (req, res) => {
 /* ---------------------------
    Global Error Handler
 ---------------------------- */
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error("Server Error:", err);
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    console.error("Server Error:", err);
 
-  res.status(500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-  });
-});
+    res.status(500).json({
+      success: false,
+      message: err.message || "Internal Server Error",
+    });
+  },
+);
 
 /* ---------------------------
    Start Server

@@ -282,7 +282,7 @@ export const logIn = async (req: Request, res: Response) => {
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "none",
+      sameSite: 'none' as const,
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     })
@@ -342,7 +342,7 @@ export const refresh = async (req: Request, res: Response) => {
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: 'none' as const,
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -410,7 +410,7 @@ export const verifyCode = async (
     return res.status(403).json({ message: "Invalid token scope" });
 
   const user = await User.findById(payload.sub);
-  if (!user) return res.status(404);
+  if (!user) return res.status(404).json({ message: "User not found" });
 
   if (user.emailVerified) {
     return res.status(400).json({ message: "Email already verified" });
@@ -479,7 +479,7 @@ export const verifyCode = async (
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
-    sameSite: "none",
+    sameSite: 'none' as const,
     path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });

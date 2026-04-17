@@ -407,7 +407,7 @@ export const verifyCode = async (
   }
 
   if (payload.type !== "email_verification")
-    return res.json(403).json({ message: "Invalid token scope" });
+    return res.status(403).json({ message: "Invalid token scope" });
 
   const user = await User.findById(payload.sub);
   if (!user) return res.status(404);

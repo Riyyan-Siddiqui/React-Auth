@@ -22,13 +22,15 @@ if (NODE_ENV === "production") {
 const allowedOrigins = [
   "http://localhost:5173",
   "https://react-auth-gules-pi.vercel.app",
-  "*" 
+  "*",
 ];
 
 app.use(
   cors({
-    origin: allowedOrigins, // Use the array directly for a moment to test
+    origin: allowedOrigins,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 /* ---------------------------

@@ -48,7 +48,7 @@ export default function ForgetPassword() {
             </Link>
           </div>
           <div className="auth-right">
-            <img src="/email-sent.png" alt="Email Sent" />
+            <img src="/email-sent.jpg" alt="Email Sent" />
           </div>
         </div>
       </div>

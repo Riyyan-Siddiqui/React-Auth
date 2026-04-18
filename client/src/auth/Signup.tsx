@@ -2,7 +2,7 @@ import "./auth.css";
 import { signupRequest } from "../api/auth";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import PasswordField from "../components/ui/passwordField"
+import PasswordField from "../components/ui/PasswordField"
 
 export default function Signup() {
   const navigate = useNavigate();

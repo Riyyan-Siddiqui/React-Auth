@@ -2,7 +2,7 @@ import "./auth.css";
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
-import PasswordField from "../components/ui/passwordField";
+import PasswordField from "../components/ui/PasswordField";
 
 export default function SetPassword() {
   const [searchParams] = useSearchParams();

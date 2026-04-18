@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginRequest } from "../api/auth";
 import { useAuth } from "../context/authContext";
-import PasswordField from "../components/ui/passwordField";
+import PasswordField from "../components/ui/PasswordField";
 
 export default function Login() {
   const navigate = useNavigate();

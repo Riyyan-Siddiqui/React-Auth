@@ -7,6 +7,14 @@ A production-ready, SaaS-level authentication system built with React, Node.js, 
 ![React](https://img.shields.io/badge/react-18.2.0-blue)
 ![TypeScript](https://img.shields.io/badge/typescript-5.0.0-blue)
 
+<img width="1228" height="773" alt="image" src="https://github.com/user-attachments/assets/9a6b2774-2ecd-46a2-920b-d4a8f0ba957a" /><br>
+
+<img width="1211" height="700" alt="image" src="https://github.com/user-attachments/assets/bb602ce3-ce17-45eb-bd65-7132cbcd9c08" /><br>
+
+<img width="934" height="458" alt="image" src="https://github.com/user-attachments/assets/94e8c643-4048-45ec-abce-38635a15fef8" /><br>
+
+<img width="718" height="331" alt="image" src="https://github.com/user-attachments/assets/4df9b115-d510-4cd4-a658-771de7e510de" /><br>
+
 ## 🌟 Features
 
 ### Authentication & Authorization
@@ -586,12 +594,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 **🐛 Found a bug? [Open an issue](https://github.com/Riyyan-Siddiqui/React-Auth/issues)**
 
 **💬 Have questions? [Start a discussion](https://github.com/Riyyan-Siddiqui/React-Auth/discussions)**
-
-<img width="1228" height="773" alt="image" src="https://github.com/user-attachments/assets/9a6b2774-2ecd-46a2-920b-d4a8f0ba957a" />
-
-<img width="1211" height="700" alt="image" src="https://github.com/user-attachments/assets/bb602ce3-ce17-45eb-bd65-7132cbcd9c08" />
-
-<img width="934" height="458" alt="image" src="https://github.com/user-attachments/assets/94e8c643-4048-45ec-abce-38635a15fef8" />
-
-<img width="718" height="331" alt="image" src="https://github.com/user-attachments/assets/4df9b115-d510-4cd4-a658-771de7e510de" />
 

@@ -615,7 +615,7 @@ export const setPassword = async (
     const { isValid, errors, strength } = validatePassword(newPassword);
     if (!isValid) {
       return res.status(400).json({
-        message: "Password does not meet security requirements",
+        message: `Password does not meet security requirements\n ${errors}`,
         code: "WEAK_PASSWORD",
         requirements: errors,
         strength,

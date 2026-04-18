@@ -84,7 +84,7 @@ export default function ForgetPassword() {
         </div>
 
         <div className="auth-right">
-          <img src="/forgot.png" alt="Forgot Password" />
+          <img className = "auth-img" src="/forget-pwd-img.jpg" alt="Forgot Password" />
         </div>
 
       </div>

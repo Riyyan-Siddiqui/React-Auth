@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { loginRequest } from "../api/auth";
 import { useAuth } from "../context/authContext";
+import PasswordField from "../components/ui/passwordField";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -85,13 +86,11 @@ export default function Login() {
             </div>
 
             <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                value={password}
+              <PasswordField 
+                label= "Password"
+                state = {password}
+                setState = {setPassword}
                 placeholder="Enter your password"
-                onChange={(e) => setPassword(e.target.value)}
-                required
               />
             </div>
 
@@ -119,7 +118,7 @@ export default function Login() {
         </div>
 
         <div className="auth-right">
-          <img src="/login.png" alt="Login" />
+          <img className="auth-img" src="/login-img.jpg" alt="Login" />
         </div>
       </div>
     </div>

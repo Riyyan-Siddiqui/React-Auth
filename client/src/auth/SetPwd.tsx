@@ -2,6 +2,7 @@ import "./auth.css";
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../api/axios";
+import PasswordField from "../components/ui/passwordField";
 
 export default function SetPassword() {
   const [searchParams] = useSearchParams();
@@ -27,14 +28,13 @@ export default function SetPassword() {
       await api.post("/auth/reset-password", {
         token,
         confirmPassword,
-        newPassword
+        newPassword,
       });
 
       alert("Password reset successful! Please login with your new password.");
       navigate("/login");
     } catch (err: any) {
       setError(err.response?.data.message || "Failed to reset password");
-      alert(error)
     } finally {
       setLoading(false);
     }
@@ -49,24 +49,20 @@ export default function SetPassword() {
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label>New Password</label>
-              <input
-                type="password"
-                placeholder="New password"
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                disabled={loading}
+              <PasswordField
+                label="New Password"
+                state={newPassword}
+                setState={setNewPassword}
+                disabled = {loading}
               />
             </div>
 
             <div className="form-group">
-              <label>Confirm Password</label>
-              <input
-                type="password"
-                placeholder="Confirm password"
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                disabled={loading}
+              <PasswordField
+                label="Confirm Password"
+                state={confirmPassword}
+                setState={setConfirmPassword}
+                disabled = {loading}
               />
             </div>
 
@@ -82,9 +78,10 @@ export default function SetPassword() {
             </p>
           </form>
         </div>
+        {error && <p>{error}</p>}
 
         <div className="auth-right">
-          <img src="/reset.png" alt="Set Password" />
+          <img className="auth-img" src="/set-pwd-img.jpg" alt="Set Password" />
         </div>
       </div>
     </div>

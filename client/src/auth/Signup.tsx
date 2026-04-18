@@ -1,7 +1,8 @@
 import "./auth.css";
 import { signupRequest } from "../api/auth";
 import { useState } from "react";
-import { useNavigate, Link} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import PasswordField from "../components/ui/passwordField"
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function Signup() {
       const res = await signupRequest(name, email, password);
       if (res) {
         navigate("/verify-code", {
-          state: {verificationToken: res.verificationToken}
+          state: { verificationToken: res.verificationToken },
         });
       }
     } catch (err: any) {
@@ -36,6 +37,7 @@ export default function Signup() {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="auth-container">
@@ -67,22 +69,19 @@ export default function Signup() {
             </div>
 
             <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                placeholder="Create password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+              <PasswordField 
+                label= "Password"
+                placeholder = "Create password"
+                state = {password}
+                setState = {setPassword}
               />
             </div>
 
             <div className="form-group">
-              <label>Confirm Password</label>
-              <input
-                type="password"
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+              <PasswordField 
+                label= "Confirm Password"
+                state = {confirmPassword}
+                setState = {setConfirmPassword}
               />
             </div>
 
@@ -92,7 +91,8 @@ export default function Signup() {
             {error && <p>{error}</p>}
 
             <p className="switch-text">
-              Already have an account? <Link to="/login" className="link">
+              Already have an account?{" "}
+              <Link to="/login" className="link">
                 Login
               </Link>
             </p>
@@ -101,7 +101,7 @@ export default function Signup() {
 
         {/* Right */}
         <div className="auth-right">
-          <img src="/signup.png" alt="Signup" />
+          <img className="auth-img" src="/signup-img.jpg" alt="Signup" />
         </div>
       </div>
     </div>

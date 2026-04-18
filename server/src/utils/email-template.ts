@@ -33,7 +33,7 @@ export const passwordResetEmail = (name: string, resetToken: string) => {
         .button { 
           display: inline-block; 
           background: #4F46E5; 
-          color: white; 
+          color: #fff; 
           padding: 12px 30px; 
           text-decoration: none; 
           border-radius: 5px;

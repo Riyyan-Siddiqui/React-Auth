@@ -103,6 +103,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // const logoutAll = async () => {
+  //   try {
+  //     await api.post("/auth/logout-all");
+  //   } catch (error) {
+  //     console.error("Logout All error:", error);
+  //   } finally {
+  //     setAccessToken(null);
+  //     setUser(null);
+  //     navigate("/login");
+  //   }
+  // };
+
   // Update user data (for profile updates, etc.)
   const updateUser = (userData: User) => {
     setUser(userData);

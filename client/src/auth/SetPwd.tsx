@@ -53,7 +53,7 @@ export default function SetPassword() {
                 label="New Password"
                 state={newPassword}
                 setState={setNewPassword}
-                disabled = {loading}
+                disabled={loading}
               />
             </div>
 
@@ -62,7 +62,7 @@ export default function SetPassword() {
                 label="Confirm Password"
                 state={confirmPassword}
                 setState={setConfirmPassword}
-                disabled = {loading}
+                disabled={loading}
               />
             </div>
 
@@ -77,8 +77,8 @@ export default function SetPassword() {
               </Link>
             </p>
           </form>
+          {error && <p>{error}</p>}
         </div>
-        {error && <p>{error}</p>}
 
         <div className="auth-right">
           <img className="auth-img" src="/set-pwd-img.jpg" alt="Set Password" />

@@ -20,7 +20,7 @@ export const generateVerificationEmail = (name: string, otp: string) => {
 export const passwordResetEmail = (name: string, resetToken: string) => {
   // In production, this would be your frontend URL
   const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:5173/"}/reset-password?token=${resetToken}`;
-  
+
   return `
     <!DOCTYPE html>
     <html>
@@ -28,16 +28,17 @@ export const passwordResetEmail = (name: string, resetToken: string) => {
       <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #4F46E5; color: white; padding: 20px; text-align: center; }
+        .header { background: #4F46E5; color: #fff; padding: 20px; text-align: center; }
         .content { background: #f9fafb; padding: 30px; }
         .button { 
           display: inline-block; 
           background: #4F46E5; 
-          color: #fff; 
+          color: #ffffff !important; 
           padding: 12px 30px; 
-          text-decoration: none; 
+          text-decoration: none !important; 
           border-radius: 5px;
           margin: 20px 0;
+          cursor: pointer;
         }
         .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
         .warning { 
